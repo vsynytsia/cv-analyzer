@@ -1,0 +1,67 @@
+[project]
+name = "cv-analyzer"
+version = "0.1.0"
+description = "CV Analysis Platform"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "beautifulsoup4~=4.12.3",
+    "bs4~=0.0.2",
+    "fake-useragent~=2.0.3",
+    "fastapi[standard]~=0.115.6",
+    "google-generativeai~=0.8.3",
+    "httpx~=0.27.2",
+    "jinja2~=3.1.5",
+    "langdetect~=1.0.9",
+    "protobuf~=5.29.1",
+    "py-googletrans~=4.0.0",
+    "pydantic~=2.10.3",
+    "pydantic-settings~=2.7.0",
+    "pymupdf~=1.25.1",
+    "starlette~=0.41.3",
+    "tenacity~=9.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.1",
+    "pytest~=8.3.4",
+    "pytest-mock~=3.14.0",
+    "reportlab~=4.2.5",
+    "pre-commit>=4.0.1",
+]
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = "py311"
+exclude = [
+    ".venv",
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    "venv",
+]
+
+[tool.ruff.lint]
+select = [
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "F", # pyflakes
+    "I", # isort
+    "C", # flake8-comprehensions
+    "B", # flake8-bugbear
+]
+ignore = [
+    "E402",
+    "E501",
+    "C901",
+    "B904",
+    "F401",
+    "F403",
+    "F405",
+]
+
+[tool.ruff.format]
+quote-style = "double"
