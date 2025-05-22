@@ -22,7 +22,7 @@ class VacancyProcessor:
             elif vacancy_lang == "en":
                 english_vacancies.append(vacancy)
             else:
-                self._logger.warning(f"Skipping vacancy with unexpected language '{vacancy_lang}': {vacancy}")
+                self._logger.warning(f"Skipping vacancy {vacancy.url} with unexpected language '{vacancy_lang}")
 
         self._logger.info(
             "Detected %d ukrainian and %d english vacancies", len(ukrainian_vacancies), len(english_vacancies)

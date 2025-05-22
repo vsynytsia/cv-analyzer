@@ -104,7 +104,9 @@ class JobSiteScraperFactory:
     def from_search_filter(search_filter: JobSearchFilter) -> JobSiteScraper:
         filter_to_scraper = {DouSearchFilter: DouJobScraper, DjinniSearchFilter: DjinniJobScraper}
         if (scraper := filter_to_scraper.get(type(search_filter))) is None:
-            raise NotImplementedError(f"Job site scraper for search filter {search_filter} is not implemented")
+            raise NotImplementedError(
+                f"Job site scraper for search filter {type(search_filter).__name__} is not implemented"
+            )
 
         return scraper()
 
