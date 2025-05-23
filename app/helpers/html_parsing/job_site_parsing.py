@@ -1,62 +1,56 @@
 import abc
 
-from app.models.domain import DjinniSearchFilter, DouSearchFilter, JobSearchFilter, Vacancy
-from app.models.http_params import DjinniVacancySearchHttpParams, DouVacancySearchHttpParams, VacancySearchHttpParams
+from app.models.domain import DjinniSearchFilter, DouSearchFilter, Vacancy, VacancySearchFilter
 
 from .html_parsing import HtmlParser
 
-__all__ = ["JobSiteScraperFactory"]
+__all__ = ["JobSiteHtmlParserFactory"]
 
 DOU_SITE_URL = "https://jobs.dou.ua/"
 DJINNI_SITE_URL = "https://djinni.co/"
 
 
-class JobSiteScraper(abc.ABC):
+class JobSiteHtmlParser(abc.ABC):
     @property
     @abc.abstractmethod
     def site_url(self) -> str:
-        raise NotImplementedError
+        pass
 
     @property
     @abc.abstractmethod
-    def site_jobs_url(self) -> str:
+    def site_vacancies_url(self) -> str:
+        pass
+
+    @abc.abstractmethod
+    def parse_vacancy_urls(self, html_content: bytes) -> list[str]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def build_http_request_params(self, search_filter: JobSearchFilter) -> VacancySearchHttpParams:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def extract_vacancy_urls(self, html_content: bytes, limit: int | None = None) -> list[str]:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def parse_vacancy_details(self, html_content: bytes, vacancy_url: str) -> Vacancy:
+    def parse_vacancy_details(self, vacancy_url: str, vacancy_html_content: bytes) -> Vacancy:
         raise NotImplementedError
 
 
-class DjinniJobScraper(JobSiteScraper):
+class DjinniHtmlParser(JobSiteHtmlParser):
     @property
     def site_url(self) -> str:
         return DJINNI_SITE_URL
 
     @property
-    def site_jobs_url(self) -> str:
+    def site_vacancies_url(self) -> str:
         return self.site_url + "jobs/"
 
-    def build_http_request_params(self, search_filter: DjinniSearchFilter) -> DjinniVacancySearchHttpParams:
-        return DjinniVacancySearchHttpParams(
-            primary_keyword=search_filter.category, exp_level=search_filter.normalized_experience
-        )
-
-    def extract_vacancy_urls(self, html_content: bytes, limit: int | None = None) -> list[str]:
+    def parse_vacancy_urls(self, html_content: bytes) -> list[str]:
         parser = HtmlParser(html_content)
         vacancy_urls = [
             (self.site_url[:-1] + link["href"]) for link in parser.find_all("a", class_="job-item__title-link")
         ]
-        return vacancy_urls[:limit] if limit is not None else vacancy_urls
+        return vacancy_urls
 
-    def parse_vacancy_details(self, html_content: bytes, vacancy_url: str) -> Vacancy:
+    def parse_vacancy_details(
+        self,
+        vacancy_url: str,
+        html_content: bytes,
+    ) -> Vacancy:
         parser = HtmlParser(html_content)
 
         description = parser.extract_element_text_unsafe("div", separator="\n", class_="job-post__description")
@@ -69,24 +63,21 @@ class DjinniJobScraper(JobSiteScraper):
         )
 
 
-class DouJobScraper(JobSiteScraper):
+class DouHtmlParser(JobSiteHtmlParser):
     @property
     def site_url(self) -> str:
         return DOU_SITE_URL
 
     @property
-    def site_jobs_url(self):
+    def site_vacancies_url(self):
         return self.site_url + "vacancies/"
 
-    def build_http_request_params(self, search_filter: DouSearchFilter) -> DouVacancySearchHttpParams:
-        return DouVacancySearchHttpParams(category=search_filter.category, exp=search_filter.normalized_experience)
-
-    def extract_vacancy_urls(self, html_content: bytes, limit: int | None = None) -> list[str]:
+    def parse_vacancy_urls(self, html_content: bytes) -> list[str]:
         parser = HtmlParser(html_content)
         vacancy_urls = [link["href"] for link in parser.find_all("a", class_="vt")]
-        return vacancy_urls[:limit] if limit is not None else vacancy_urls
+        return vacancy_urls
 
-    def parse_vacancy_details(self, html_content: bytes, vacancy_url: str) -> Vacancy:
+    def parse_vacancy_details(self, vacancy_url: str, html_content: bytes) -> Vacancy:
         parser = HtmlParser(html_content)
 
         description = parser.extract_element_text_unsafe("div", separator=" ", class_="b-typo vacancy-section")
@@ -99,10 +90,10 @@ class DouJobScraper(JobSiteScraper):
         )
 
 
-class JobSiteScraperFactory:
+class JobSiteHtmlParserFactory:
     @staticmethod
-    def from_search_filter(search_filter: JobSearchFilter) -> JobSiteScraper:
-        filter_to_scraper = {DouSearchFilter: DouJobScraper, DjinniSearchFilter: DjinniJobScraper}
+    def from_search_filter(search_filter: VacancySearchFilter) -> JobSiteHtmlParser:
+        filter_to_scraper = {DouSearchFilter: DouHtmlParser, DjinniSearchFilter: DjinniHtmlParser}
         if (scraper := filter_to_scraper.get(type(search_filter))) is None:
             raise NotImplementedError(
                 f"Job site scraper for search filter {type(search_filter).__name__} is not implemented"
@@ -111,10 +102,10 @@ class JobSiteScraperFactory:
         return scraper()
 
     @staticmethod
-    def from_vacancy_url(url: str) -> JobSiteScraper:
+    def from_vacancy_url(url: str) -> JobSiteHtmlParser:
         if DJINNI_SITE_URL in url:
-            return DjinniJobScraper()
+            return DjinniHtmlParser()
         elif DOU_SITE_URL in url:
-            return DouJobScraper()
+            return DouHtmlParser()
         else:
             raise NotImplementedError(f"Job site scraper for url {url} is not implemented")

@@ -1,6 +1,6 @@
-from typing import TypeAlias, TypedDict
+from typing import TypedDict
 
-__all__ = ["VacancySearchHttpParams", "DouVacancySearchHttpParams", "DjinniVacancySearchHttpParams"]
+__all__ = ["DouVacancySearchHttpParams", "DjinniVacancySearchHttpParams"]
 
 
 class DouVacancySearchHttpParams(TypedDict):
@@ -11,6 +11,3 @@ class DouVacancySearchHttpParams(TypedDict):
 class DjinniVacancySearchHttpParams(TypedDict):
     primary_keyword: str
     exp_level: str
-
-
-VacancySearchHttpParams: TypeAlias = DouVacancySearchHttpParams | DjinniVacancySearchHttpParams
