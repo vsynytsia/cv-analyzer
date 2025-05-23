@@ -6,8 +6,8 @@ from app.core.exceptions import UnsupportedCVLanguage
 from app.helpers import utils
 from app.helpers.generative import ContentGenerator, GenerationConfig
 from app.helpers.text import LanguageDetector, TextTranslator, TranslationConfig
-from app.models.domain import DjinniSearchFilter, DouSearchFilter, JobSearchFilter
-from app.models.generative import VacancySearchFilterLlmResponse, VacancySearchFiltersPromptParams
+from app.models.domain import DjinniSearchFilter, DouSearchFilter, VacancySearchFilter
+from app.models.generative import ExtractVacancyFiltersLlmResponse, ExtractVacancyFiltersPromptParams
 
 __all__ = ["CVAnalyzer"]
 
@@ -40,11 +40,11 @@ class CVAnalyzer:
         else:
             raise UnsupportedCVLanguage(cv_language)
 
-    async def extract_search_filters(self, cv: str) -> list[JobSearchFilter]:
+    async def extract_search_filters(self, cv: str) -> list[VacancySearchFilter]:
         prompt = self._get_search_filters_extraction_prompt(cv)
         response = await self._content_generator.generate_structured_content(
             prompt=prompt,
-            generation_config=GenerationConfig(temperature=0, response_model=VacancySearchFilterLlmResponse),
+            generation_config=GenerationConfig(temperature=0, response_model=ExtractVacancyFiltersLlmResponse),
         )
         search_filters = self._vacancy_search_filter_llm_response_to_job_search_filters(response)
 
@@ -53,13 +53,13 @@ class CVAnalyzer:
 
     def _get_search_filters_extraction_prompt(self, cv: str) -> str:
         return utils.get_rendered_template(
-            env=self._jinja_env, template_path="extract_search_filters.tpl", **VacancySearchFiltersPromptParams(cv=cv)
+            env=self._jinja_env, template_path="extract_search_filters.tpl", **ExtractVacancyFiltersPromptParams(cv=cv)
         )
 
     @staticmethod
     def _vacancy_search_filter_llm_response_to_job_search_filters(
-        response: VacancySearchFilterLlmResponse,
-    ) -> list[JobSearchFilter]:
+        response: ExtractVacancyFiltersLlmResponse,
+    ) -> list[VacancySearchFilter]:
         return [
             DouSearchFilter(experience_years=response.years_of_experience, category=response.dou_category),
             DjinniSearchFilter(experience_years=response.years_of_experience, category=response.djinni_category),

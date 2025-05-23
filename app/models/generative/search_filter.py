@@ -4,14 +4,14 @@ from pydantic import BaseModel
 
 from app.models.domain.category import DjinniCategory, DouCategory
 
-__all__ = ["VacancySearchFilterLlmResponse", "VacancySearchFiltersPromptParams"]
+__all__ = ["ExtractVacancyFiltersLlmResponse", "ExtractVacancyFiltersPromptParams"]
 
 
-class VacancySearchFiltersPromptParams(TypedDict):
+class ExtractVacancyFiltersPromptParams(TypedDict):
     cv: str
 
 
-class VacancySearchFilterLlmResponse(BaseModel):
+class ExtractVacancyFiltersLlmResponse(BaseModel):
     years_of_experience: int
     dou_category: DouCategory
     djinni_category: DjinniCategory
