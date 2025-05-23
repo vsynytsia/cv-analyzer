@@ -5,7 +5,7 @@ import jinja2
 
 from app.helpers import utils
 from app.helpers.generative import ContentGenerator, GenerationConfig
-from app.models.domain import ScoredVacancy, Vacancy
+from app.models.domain.vacancy import ScoredVacancy, Vacancy, VacancyScore
 from app.models.generative import ScoredVacanciesLlmResponse, VacancyScoringPromptParams
 
 __all__ = ["VacancyScorer"]
@@ -50,11 +50,12 @@ class VacancyScorer:
     ) -> list[ScoredVacancy]:
         return [
             ScoredVacancy(
-                **vacancy.model_dump(), relevance=llm_response.relevance_score, reasoning=llm_response.reasoning
+                **vacancy.model_dump(),
+                score=VacancyScore(score=llm_response.relevance_score, reasoning=llm_response.reasoning),
             )
             for vacancy, llm_response in zip(vacancies, r.scored_vacancies, strict=False)
         ]
 
     @staticmethod
     def _sort_vacancies_by_relevancy_score(vacancies: list[ScoredVacancy]) -> list[ScoredVacancy]:
-        return sorted(vacancies, key=lambda v: v.relevance, reverse=True)
+        return sorted(vacancies, key=lambda v: v.score.score, reverse=True)

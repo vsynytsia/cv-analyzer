@@ -12,7 +12,7 @@
 <VACANCIES>
 {% for vacancy in vacancies %}
 Vacancy ID:{{ loop.index }}
-{{ vacancy.description }}
+{{ vacancy.details.description }}
 {% endfor %}
 </VACANCIES>
 

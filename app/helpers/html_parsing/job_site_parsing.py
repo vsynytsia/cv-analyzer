@@ -1,6 +1,7 @@
 import abc
 
-from app.models.domain import DjinniSearchFilter, DouSearchFilter, Vacancy, VacancySearchFilter
+from app.models.domain.search_filter import DjinniSearchFilter, DouSearchFilter, VacancySearchFilter
+from app.models.domain.vacancy import VacancyDetails
 
 from .html_parsing import HtmlParser
 
@@ -26,7 +27,7 @@ class JobSiteHtmlParser(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def parse_vacancy_details(self, vacancy_url: str, vacancy_html_content: bytes) -> Vacancy:
+    def parse_vacancy_details(self, vacancy_html_content: bytes) -> VacancyDetails:
         raise NotImplementedError
 
 
@@ -46,21 +47,15 @@ class DjinniHtmlParser(JobSiteHtmlParser):
         ]
         return vacancy_urls
 
-    def parse_vacancy_details(
-        self,
-        vacancy_url: str,
-        html_content: bytes,
-    ) -> Vacancy:
-        parser = HtmlParser(html_content)
+    def parse_vacancy_details(self, vacancy_html_content: bytes) -> VacancyDetails:
+        parser = HtmlParser(vacancy_html_content)
 
         description = parser.extract_element_text_unsafe("div", separator="\n", class_="job-post__description")
         company_name = parser.extract_element_text_safe("a", class_="text-reset")
         salary = parser.extract_element_text_safe("span", class_="text-success text-nowrap")
         job_title = parser.extract_first_line_of_multiline_string_safe("h1")
 
-        return Vacancy(
-            url=vacancy_url, description=description, job_title=job_title, company_name=company_name, salary=salary
-        )
+        return VacancyDetails(description=description, job_title=job_title, company_name=company_name, salary=salary)
 
 
 class DouHtmlParser(JobSiteHtmlParser):
@@ -77,17 +72,15 @@ class DouHtmlParser(JobSiteHtmlParser):
         vacancy_urls = [link["href"] for link in parser.find_all("a", class_="vt")]
         return vacancy_urls
 
-    def parse_vacancy_details(self, vacancy_url: str, html_content: bytes) -> Vacancy:
-        parser = HtmlParser(html_content)
+    def parse_vacancy_details(self, vacancy_html_content: bytes) -> VacancyDetails:
+        parser = HtmlParser(vacancy_html_content)
 
         description = parser.extract_element_text_unsafe("div", separator=" ", class_="b-typo vacancy-section")
         job_title = parser.extract_element_text_safe("h1", class_="g-h2")
         salary = parser.extract_element_text_safe("span", class_="salary")
         company_name = parser.extract_first_line_of_multiline_string_safe("div", class_="l-n")
 
-        return Vacancy(
-            url=vacancy_url, description=description, job_title=job_title, company_name=company_name, salary=salary
-        )
+        return VacancyDetails(description=description, job_title=job_title, company_name=company_name, salary=salary)
 
 
 class JobSiteHtmlParserFactory:

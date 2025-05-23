@@ -1,6 +1,7 @@
 import logging
 
 from app.helpers.text import LanguageDetector, TextTranslator, TranslationConfig
+from app.models import VacancyDetails
 from app.models.domain import Vacancy
 
 __all__ = ["VacancyProcessor"]
@@ -16,7 +17,7 @@ class VacancyProcessor:
         ukrainian_vacancies, english_vacancies = [], []
 
         for vacancy in vacancies:
-            vacancy_lang = self._language_detector.detect_language(vacancy.description)
+            vacancy_lang = self._language_detector.detect_language(vacancy.details.description)
             if vacancy_lang == "uk":
                 ukrainian_vacancies.append(vacancy)
             elif vacancy_lang == "en":
@@ -29,14 +30,20 @@ class VacancyProcessor:
         )
 
         translated_descriptions = await self._translator.batch_translate(
-            texts=[vacancy.description for vacancy in ukrainian_vacancies],
+            texts=[vacancy.details.description for vacancy in ukrainian_vacancies],
             translation_config=TranslationConfig(source_language="uk", target_language="en"),
         )
 
         translated_ukrainian_vacancies = [
-            Vacancy(**vacancy.model_dump(exclude={"description"}), description=translated_description)
+            Vacancy(
+                url=vacancy.url,
+                details=VacancyDetails(
+                    **vacancy.details.model_dump(exclude={"description"}), description=translated_description
+                ),
+            )
             for vacancy, translated_description in zip(ukrainian_vacancies, translated_descriptions, strict=False)
         ]
+
         standardized_vacancies = english_vacancies + translated_ukrainian_vacancies
 
         self._logger.info("Standardized vacancies language")

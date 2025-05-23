@@ -37,5 +37,8 @@ class VacancyScraper(AsyncRESTClient):
 
     async def _fetch_vacancy(self, url: str) -> Vacancy:
         response = await self._session.get(url)
+
         parser = JobSiteHtmlParserFactory.from_vacancy_url(url)
-        return parser.parse_vacancy_details(url, response.content)
+
+        vacancy_details = parser.parse_vacancy_details(response.content)
+        return Vacancy(url=url, details=vacancy_details)

@@ -43,7 +43,7 @@ class GoogletransTextTranslator(TextTranslator):
         async with self._client:
             try:
                 return await self._client.translate(
-                    text, translation_config.source_language, translation_config.target_language
+                    text, src=translation_config.source_language, dest=translation_config.target_language
                 )
             except Exception as ex:
                 raise TextTranslationError() from ex
