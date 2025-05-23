@@ -93,13 +93,13 @@ class DouHtmlParser(JobSiteHtmlParser):
 class JobSiteHtmlParserFactory:
     @staticmethod
     def from_search_filter(search_filter: VacancySearchFilter) -> JobSiteHtmlParser:
-        filter_to_scraper = {DouSearchFilter: DouHtmlParser, DjinniSearchFilter: DjinniHtmlParser}
-        if (scraper := filter_to_scraper.get(type(search_filter))) is None:
+        filter_to_parser = {DouSearchFilter: DouHtmlParser, DjinniSearchFilter: DjinniHtmlParser}
+        if (parser := filter_to_parser.get(type(search_filter))) is None:
             raise NotImplementedError(
-                f"Job site scraper for search filter {type(search_filter).__name__} is not implemented"
+                f"Job site HTML parser for search filter {type(search_filter).__name__} is not implemented"
             )
 
-        return scraper()
+        return parser()
 
     @staticmethod
     def from_vacancy_url(url: str) -> JobSiteHtmlParser:
@@ -108,4 +108,4 @@ class JobSiteHtmlParserFactory:
         elif DOU_SITE_URL in url:
             return DouHtmlParser()
         else:
-            raise NotImplementedError(f"Job site scraper for url {url} is not implemented")
+            raise NotImplementedError(f"Job site HTML parser for url {url} is not implemented")
