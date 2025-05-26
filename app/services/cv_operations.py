@@ -37,12 +37,12 @@ class CVOperationsService:
         self._logger.info("Matching vacancies for file %s", file_processor.filename)
 
         cv_str = await file_processor.extract_text()
-        cv_str = await self._language_standardizer.standardize_text_language(
+        standardized_cv_list = await self._language_standardizer.standardize_text_language(
             texts=[cv_str], standardization_config=DEFAULT_STANDARDIZATION_CONFIG
         )
-        cv_str = cv_str[0]
+        standardized_cv_str = standardized_cv_list[0]
 
-        search_filters = await self._cv_analyzer.extract_search_filters(cv_str)
+        search_filters = await self._cv_analyzer.extract_search_filters(standardized_cv_str)
 
         vacancies = await self._vacancy_scraper.fetch_vacancies(search_filters)
 
@@ -54,7 +54,7 @@ class CVOperationsService:
             vacancies, standardized_vacancies_descriptions
         )
 
-        scored_vacancies = await self._vacancy_scorer.score_vacancies(cv_str, standardized_vacancies)
+        scored_vacancies = await self._vacancy_scorer.score_vacancies(standardized_cv_str, standardized_vacancies)
 
         self._logger.info("Successfully matched vacancies for file %s", file_processor.filename)
         return scored_vacancies
