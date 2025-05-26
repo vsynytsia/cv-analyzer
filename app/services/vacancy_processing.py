@@ -4,10 +4,10 @@ from app.helpers.text import LanguageDetector, TextTranslator, TranslationConfig
 from app.models import VacancyDetails
 from app.models.domain import Vacancy
 
-__all__ = ["VacancyProcessor"]
+__all__ = ["VacancyProcessingService"]
 
 
-class VacancyProcessor:
+class VacancyProcessingService:
     def __init__(self, translator: TextTranslator, language_detector: LanguageDetector) -> None:
         self._translator = translator
         self._language_detector = language_detector

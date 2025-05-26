@@ -9,10 +9,10 @@ from app.helpers.text import LanguageDetector, TextTranslator, TranslationConfig
 from app.models.domain import DjinniSearchFilter, DouSearchFilter, VacancySearchFilter
 from app.models.generative import ExtractVacancyFiltersLlmResponse, ExtractVacancyFiltersPromptParams
 
-__all__ = ["CVAnalyzer"]
+__all__ = ["CVAnalysisService"]
 
 
-class CVAnalyzer:
+class CVAnalysisService:
     def __init__(
         self,
         translator: TextTranslator,

@@ -1,5 +1,4 @@
 import abc
-import logging
 
 import httpx
 from fake_useragent import UserAgent
@@ -12,6 +11,4 @@ class AsyncRESTClient(abc.ABC):  # noqa: B024
         self._timeout = httpx.Timeout(timeout_seconds)
         self._headers = {"User-Agent": UserAgent().random}
 
-        self._session = httpx.AsyncClient()
-
-        self._logger = logging.getLogger(self.__class__.__name__)
+        self._session = httpx.AsyncClient(timeout=self._timeout, headers=self._headers)

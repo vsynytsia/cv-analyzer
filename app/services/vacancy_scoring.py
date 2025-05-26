@@ -5,13 +5,13 @@ import jinja2
 
 from app.helpers import utils
 from app.helpers.generative import ContentGenerator, GenerationConfig
-from app.models.domain.vacancy import ScoredVacancy, Vacancy, VacancyScore
+from app.models.domain import ScoredVacancy, Vacancy, VacancyScore
 from app.models.generative import ScoredVacanciesLlmResponse, VacancyScoringPromptParams
 
-__all__ = ["VacancyScorer"]
+__all__ = ["VacancyScoringService"]
 
 
-class VacancyScorer:
+class VacancyScoringService:
     def __init__(self, content_generator: ContentGenerator, jinja_env: jinja2.Environment) -> None:
         self._content_generator = content_generator
         self._jinja_env = jinja_env

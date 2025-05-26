@@ -3,8 +3,12 @@ import logging
 from fastapi import UploadFile
 
 from app.core.settings import settings
-from app.helpers import CVAnalyzer, UploadFileProcessor, VacancyProcessor, VacancyScorer, VacancyScraper
-from app.models import ScoredVacancy
+from app.helpers.upload_file import UploadFileProcessor
+from app.models.domain import ScoredVacancy
+from app.services.cv_analysis import CVAnalysisService
+from app.services.vacancy_processing import VacancyProcessingService
+from app.services.vacancy_scoring import VacancyScoringService
+from app.services.vacancy_scraping import VacancyScrapingService
 
 __all__ = ["CVOperationsService"]
 
@@ -12,10 +16,10 @@ __all__ = ["CVOperationsService"]
 class CVOperationsService:
     def __init__(
         self,
-        cv_analyzer: CVAnalyzer,
-        vacancy_scraper: VacancyScraper,
-        vacancy_processor: VacancyProcessor,
-        vacancy_scorer: VacancyScorer,
+        cv_analyzer: CVAnalysisService,
+        vacancy_scraper: VacancyScrapingService,
+        vacancy_processor: VacancyProcessingService,
+        vacancy_scorer: VacancyScoringService,
     ) -> None:
         self._cv_analyzer = cv_analyzer
         self._vacancy_scraper = vacancy_scraper

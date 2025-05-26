@@ -19,15 +19,11 @@ JinjaEnvDep = Annotated[jinja2.Environment, Depends(get_jinja_environment)]
 
 from app.helpers import (
     ContentGenerator,
-    CVAnalyzer,
     GoogleGenaiContentGenerator,
     GoogletransTextTranslator,
     LangdetectLanguageDetector,
     LanguageDetector,
     TextTranslator,
-    VacancyProcessor,
-    VacancyScorer,
-    VacancyScraper,
 )
 
 
@@ -47,38 +43,46 @@ TextTranslatorDep = Annotated[TextTranslator, Depends(get_text_translator)]
 LanguageDetectorDep = Annotated[LanguageDetector, Depends(get_language_detector)]
 ContentGeneratorDep = Annotated[ContentGenerator, Depends(get_content_generator)]
 
+# ------ Service Dependencies ------
 
-async def get_cv_analyzer(
+from app.services import (
+    CVAnalysisService,
+    CVOperationsService,
+    VacancyProcessingService,
+    VacancyScoringService,
+    VacancyScrapingService,
+)
+
+
+async def get_cv_analysis_service(
     translator: TextTranslatorDep,
     language_detector: LanguageDetectorDep,
     content_generator: ContentGeneratorDep,
     jinja_env: JinjaEnvDep,
-) -> CVAnalyzer:
-    return CVAnalyzer(translator, language_detector, content_generator, jinja_env)
+) -> CVAnalysisService:
+    return CVAnalysisService(translator, language_detector, content_generator, jinja_env)
 
 
-async def get_vacancy_scraper() -> VacancyScraper:
-    return VacancyScraper()
+async def get_vacancy_scraping_service() -> VacancyScrapingService:
+    return VacancyScrapingService()
 
 
-async def get_vacancy_processor(
+async def get_vacancy_processing_service(
     translator: TextTranslatorDep, language_detector: LanguageDetectorDep
-) -> VacancyProcessor:
-    return VacancyProcessor(translator, language_detector)
+) -> VacancyProcessingService:
+    return VacancyProcessingService(translator, language_detector)
 
 
-async def get_vacancy_scorer(content_generator: ContentGeneratorDep, jinja_env: JinjaEnvDep) -> VacancyScorer:
-    return VacancyScorer(content_generator, jinja_env)
+async def get_vacancy_scoring_service(
+    content_generator: ContentGeneratorDep, jinja_env: JinjaEnvDep
+) -> VacancyScoringService:
+    return VacancyScoringService(content_generator, jinja_env)
 
 
-CVAnalyzerDep = Annotated[CVAnalyzer, Depends(get_cv_analyzer)]
-VacancyScraperDep = Annotated[VacancyScraper, Depends(get_vacancy_scraper)]
-VacancyProcessorDep = Annotated[VacancyProcessor, Depends(get_vacancy_processor)]
-VacancyScorerDep = Annotated[VacancyScorer, Depends(get_vacancy_scorer)]
-
-# ------ Service Dependencies ------
-
-from app.services import CVOperationsService
+CVAnalyzerDep = Annotated[CVAnalysisService, Depends(get_cv_analysis_service)]
+VacancyScraperDep = Annotated[VacancyScrapingService, Depends(get_vacancy_scraping_service)]
+VacancyProcessorDep = Annotated[VacancyProcessingService, Depends(get_vacancy_processing_service)]
+VacancyScorerDep = Annotated[VacancyScoringService, Depends(get_vacancy_scoring_service)]
 
 
 async def get_cv_operations_service(
