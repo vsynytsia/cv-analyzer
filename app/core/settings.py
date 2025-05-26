@@ -10,8 +10,6 @@ class Settings(BaseSettings):
     PROJECT_DESCRIPTION: str = "CV Analysis Platform made by Vlad & Katyushka"
     PROJECT_VERSION: str = "0.1"
 
-    MAX_VACANCIES_PER_SOURCE: int = 25
-
     MAX_UPLOAD_FILE_SIZE_BYTES: int = 1_000_000
 
     LOG_LEVEL: str = "INFO"

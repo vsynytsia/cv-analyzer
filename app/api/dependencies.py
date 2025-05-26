@@ -23,6 +23,7 @@ from app.helpers import (
     GoogletransTextTranslator,
     LangdetectLanguageDetector,
     LanguageDetector,
+    TextLanguageStandardizer,
     TextTranslator,
 )
 
@@ -43,12 +44,20 @@ TextTranslatorDep = Annotated[TextTranslator, Depends(get_text_translator)]
 LanguageDetectorDep = Annotated[LanguageDetector, Depends(get_language_detector)]
 ContentGeneratorDep = Annotated[ContentGenerator, Depends(get_content_generator)]
 
+
+async def get_text_language_standardizer(
+    language_detector: LanguageDetectorDep, text_translator: TextTranslatorDep
+) -> TextLanguageStandardizer:
+    return TextLanguageStandardizer(text_language_detector=language_detector, text_translator=text_translator)
+
+
+TextLanguageStandardizerDep = Annotated[TextLanguageStandardizer, Depends(get_text_language_standardizer)]
+
 # ------ Service Dependencies ------
 
 from app.services import (
     CVAnalysisService,
     CVOperationsService,
-    VacancyProcessingService,
     VacancyScoringService,
     VacancyScrapingService,
 )
@@ -67,12 +76,6 @@ async def get_vacancy_scraping_service() -> VacancyScrapingService:
     return VacancyScrapingService()
 
 
-async def get_vacancy_processing_service(
-    translator: TextTranslatorDep, language_detector: LanguageDetectorDep
-) -> VacancyProcessingService:
-    return VacancyProcessingService(translator, language_detector)
-
-
 async def get_vacancy_scoring_service(
     content_generator: ContentGeneratorDep, jinja_env: JinjaEnvDep
 ) -> VacancyScoringService:
@@ -81,21 +84,20 @@ async def get_vacancy_scoring_service(
 
 CVAnalyzerDep = Annotated[CVAnalysisService, Depends(get_cv_analysis_service)]
 VacancyScraperDep = Annotated[VacancyScrapingService, Depends(get_vacancy_scraping_service)]
-VacancyProcessorDep = Annotated[VacancyProcessingService, Depends(get_vacancy_processing_service)]
 VacancyScorerDep = Annotated[VacancyScoringService, Depends(get_vacancy_scoring_service)]
 
 
 async def get_cv_operations_service(
     cv_analyzer: CVAnalyzerDep,
     vacancy_scraper: VacancyScraperDep,
-    vacancy_processor: VacancyProcessorDep,
     vacancy_scorer: VacancyScorerDep,
+    text_language_standardizer: TextLanguageStandardizerDep,
 ) -> CVOperationsService:
     return CVOperationsService(
         cv_analyzer=cv_analyzer,
         vacancy_scraper=vacancy_scraper,
-        vacancy_processor=vacancy_processor,
         vacancy_scorer=vacancy_scorer,
+        language_standardizer=text_language_standardizer,
     )
 
 
