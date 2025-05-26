@@ -3,8 +3,8 @@ from collections import defaultdict
 from collections.abc import Sequence
 from dataclasses import dataclass
 
-from .language_detection import LanguageDetector
-from .text_translation import TextTranslator, TranslationConfig
+from .language_detection import TextLanguageDetector
+from .text_translation import TextTranslationConfig, TextTranslator
 
 __all__ = ["TextLanguageStandardizer", "TextLanguageStandardizationConfig"]
 
@@ -16,7 +16,7 @@ class TextLanguageStandardizationConfig:
 
 
 class TextLanguageStandardizer:
-    def __init__(self, text_language_detector: LanguageDetector, text_translator: TextTranslator) -> None:
+    def __init__(self, text_language_detector: TextLanguageDetector, text_translator: TextTranslator) -> None:
         self._text_language_detector = text_language_detector
         self._text_translator = text_translator
         self._logger = logging.getLogger(self.__class__.__name__)
@@ -47,7 +47,7 @@ class TextLanguageStandardizer:
 
             translated_texts_this_batch = await self._text_translator.batch_translate(
                 texts_this_batch,
-                translation_config=TranslationConfig(
+                translation_config=TextTranslationConfig(
                     source_language=source_language, target_language=standardization_config.primary_language
                 ),
             )

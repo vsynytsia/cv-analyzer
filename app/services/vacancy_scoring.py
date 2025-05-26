@@ -35,7 +35,7 @@ class VacancyScoringService:
             prompt=prompt,
             generation_config=GenerationConfig(temperature=0, top_k=1, response_model=ScoredVacanciesLlmResponse),
         )
-        return self._enrich_vacancies_with_scored_vacancies_llm_response(response, vacancies)
+        return self._enrich_vacancies_with_scored_vacancies_llm_response(vacancies, response)
 
     def _get_vacancies_scoring_prompt(self, cv: str, vacancies: Sequence[Vacancy]) -> str:
         return utils.get_rendered_template(
@@ -46,7 +46,8 @@ class VacancyScoringService:
 
     @staticmethod
     def _enrich_vacancies_with_scored_vacancies_llm_response(
-        r: ScoredVacanciesLlmResponse, vacancies: Sequence[Vacancy]
+        vacancies: Sequence[Vacancy],
+        r: ScoredVacanciesLlmResponse,
     ) -> list[ScoredVacancy]:
         return [
             ScoredVacancy(

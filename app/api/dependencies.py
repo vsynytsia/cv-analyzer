@@ -21,8 +21,8 @@ from app.helpers import (
     ContentGenerator,
     GoogleGenaiContentGenerator,
     GoogletransTextTranslator,
-    LangdetectLanguageDetector,
-    LanguageDetector,
+    LangdetectTextLanguageDetector,
+    TextLanguageDetector,
     TextLanguageStandardizer,
     TextTranslator,
 )
@@ -32,8 +32,8 @@ async def get_text_translator() -> TextTranslator:
     return GoogletransTextTranslator()
 
 
-async def get_language_detector() -> LanguageDetector:
-    return LangdetectLanguageDetector()
+async def get_language_detector() -> TextLanguageDetector:
+    return LangdetectTextLanguageDetector()
 
 
 async def get_content_generator() -> ContentGenerator:
@@ -41,7 +41,7 @@ async def get_content_generator() -> ContentGenerator:
 
 
 TextTranslatorDep = Annotated[TextTranslator, Depends(get_text_translator)]
-LanguageDetectorDep = Annotated[LanguageDetector, Depends(get_language_detector)]
+LanguageDetectorDep = Annotated[TextLanguageDetector, Depends(get_language_detector)]
 ContentGeneratorDep = Annotated[ContentGenerator, Depends(get_content_generator)]
 
 

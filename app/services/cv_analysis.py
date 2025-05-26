@@ -4,7 +4,7 @@ import jinja2
 
 from app.helpers import utils
 from app.helpers.generative import ContentGenerator, GenerationConfig
-from app.helpers.text import LanguageDetector, TextTranslator
+from app.helpers.text import TextLanguageDetector, TextTranslator
 from app.models.domain import DjinniSearchFilter, DouSearchFilter, VacancySearchFilter
 from app.models.generative import ExtractVacancyFiltersLlmResponse, ExtractVacancyFiltersPromptParams
 
@@ -15,7 +15,7 @@ class CVAnalysisService:
     def __init__(
         self,
         translator: TextTranslator,
-        language_detector: LanguageDetector,
+        language_detector: TextLanguageDetector,
         content_generator: ContentGenerator,
         jinja_env: jinja2.Environment,
     ) -> None:
