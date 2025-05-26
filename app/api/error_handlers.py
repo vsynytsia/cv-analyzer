@@ -29,7 +29,6 @@ def register_error_handlers(app: FastAPI):
         mapping = [
             (FileTooLarge, status.HTTP_413_REQUEST_ENTITY_TOO_LARGE),
             (UnsupportedFileType, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE),
-            (BusinessException, status.HTTP_500_INTERNAL_SERVER_ERROR),
             (UpstreamServiceError, status.HTTP_502_BAD_GATEWAY),
             (CVAnalyzerException, status.HTTP_400_BAD_REQUEST),
         ]
