@@ -6,7 +6,6 @@ from starlette import status
 
 from app.api.serializers import ErrorSerializer
 from app.core.exceptions import (
-    BusinessException,
     CVAnalyzerException,
     FileTooLarge,
     UnsupportedFileType,
