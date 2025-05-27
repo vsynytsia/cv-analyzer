@@ -1,9 +1,6 @@
 import logging
 
-import jinja2
-
-from app.helpers import utils
-from app.helpers.generative import ContentGenerator, GenerationConfig
+from app.helpers.generative import ContentGenerator, GenerationConfig, PromptManager
 from app.helpers.text import TextLanguageDetector, TextTranslator
 from app.models.domain import DjinniSearchFilter, DouSearchFilter, VacancySearchFilter
 from app.models.generative import ExtractVacancyFiltersLlmResponse, ExtractVacancyFiltersPromptParams
@@ -17,12 +14,12 @@ class CVAnalysisService:
         translator: TextTranslator,
         language_detector: TextLanguageDetector,
         content_generator: ContentGenerator,
-        jinja_env: jinja2.Environment,
+        prompt_manager: PromptManager,
     ) -> None:
         self._translator = translator
         self._language_detector = language_detector
         self._content_generator = content_generator
-        self._jinja_env = jinja_env
+        self._prompt_manager = prompt_manager
         self._logger = logging.getLogger(self.__class__.__name__)
 
     async def extract_search_filters(self, cv: str) -> list[VacancySearchFilter]:
@@ -37,8 +34,8 @@ class CVAnalysisService:
         return search_filters
 
     def _get_search_filters_extraction_prompt(self, cv: str) -> str:
-        return utils.get_rendered_template(
-            env=self._jinja_env, template_path="extract_search_filters.tpl", **ExtractVacancyFiltersPromptParams(cv=cv)
+        return self._prompt_manager.render_prompt_template(
+            prompt_template_path="extract_search_filters.tpl", **ExtractVacancyFiltersPromptParams(cv=cv)
         )
 
     @staticmethod

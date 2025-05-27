@@ -1,10 +1,8 @@
 import logging
 from collections.abc import Sequence
 
-import jinja2
-
 from app.helpers import utils
-from app.helpers.generative import ContentGenerator, GenerationConfig
+from app.helpers.generative import ContentGenerator, GenerationConfig, PromptManager
 from app.models.domain import ScoredVacancy, Vacancy, VacancyScore
 from app.models.generative import ScoredVacanciesLlmResponse, VacancyScoringPromptParams
 
@@ -12,9 +10,9 @@ __all__ = ["VacancyScoringService"]
 
 
 class VacancyScoringService:
-    def __init__(self, content_generator: ContentGenerator, jinja_env: jinja2.Environment) -> None:
+    def __init__(self, content_generator: ContentGenerator, prompt_manager: PromptManager) -> None:
         self._content_generator = content_generator
-        self._jinja_env = jinja_env
+        self._prompt_manager = prompt_manager
         self._logger = logging.getLogger(self.__class__.__name__)
 
     async def score_vacancies(self, cv: str, vacancies: Sequence[Vacancy]) -> list[ScoredVacancy]:
@@ -38,9 +36,8 @@ class VacancyScoringService:
         return self._enrich_vacancies_with_scored_vacancies_llm_response(vacancies, response)
 
     def _get_vacancies_scoring_prompt(self, cv: str, vacancies: Sequence[Vacancy]) -> str:
-        return utils.get_rendered_template(
-            env=self._jinja_env,
-            template_path="vacancy_scoring.tpl",
+        return self._prompt_manager.render_prompt_template(
+            prompt_template_path="vacancy_scoring.tpl",
             **VacancyScoringPromptParams(cv=cv, vacancies=vacancies),
         )
 
