@@ -45,10 +45,8 @@ class UploadFileProcessor:
             raise UnsupportedFileType(self.filename, self.SUPPORTED_FILE_TYPES) from ex
 
     def _validate(self) -> None:
-        if (size := self.size_bytes) is None or (_ := self.filename) is None:
+        if self.size_bytes is None or self.filename is None:
             raise FileMalformed()
 
-        max_size = self.max_file_size_bytes
-
-        if size > max_size:
-            raise FileTooLarge(size, max_size)
+        if self.size_bytes > self.max_file_size_bytes:
+            raise FileTooLarge(self.size_bytes, self.max_file_size_bytes)
