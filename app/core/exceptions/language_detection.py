@@ -1,9 +1,9 @@
-from .base import UpstreamServiceError
+from .base import ExternalServiceError
 
 __all__ = ["TextLanguageDetectionError"]
 
 
-class TextLanguageDetectionError(UpstreamServiceError):
+class TextLanguageDetectionError(ExternalServiceError):
     code = "text_language_detection_error"
 
     def __init__(self) -> None:

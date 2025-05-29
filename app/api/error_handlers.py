@@ -6,10 +6,13 @@ from starlette import status
 
 from app.api.serializers import ErrorSerializer
 from app.core.exceptions import (
+    BusinessError,
     CVAnalyzerException,
+    ExternalServiceError,
     FileTooLarge,
+    InternalError,
     UnsupportedFileType,
-    UpstreamServiceError,
+    UserInputError,
 )
 
 __all__ = ["register_error_handlers"]
@@ -28,13 +31,18 @@ def register_error_handlers(app: FastAPI):
         mapping = [
             (FileTooLarge, status.HTTP_413_REQUEST_ENTITY_TOO_LARGE),
             (UnsupportedFileType, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE),
-            (UpstreamServiceError, status.HTTP_502_BAD_GATEWAY),
-            (CVAnalyzerException, status.HTTP_400_BAD_REQUEST),
+            (UserInputError, status.HTTP_400_BAD_REQUEST),
+            (BusinessError, status.HTTP_400_BAD_REQUEST),
+            (InternalError, status.HTTP_500_INTERNAL_SERVER_ERROR),
+            (ExternalServiceError, status.HTTP_502_BAD_GATEWAY),
         ]
 
         for error_type, status_code in mapping:
             if issubclass(type(error), error_type):
+                logging.error(f"Handled server error: {error}", exc_info=error)
                 return json_cv_analyzer_error_handler(error, status_code)
+
+        raise RuntimeError(f"Could not map exception {error} to proper HTTP type")
 
     @app.exception_handler(Exception)
     def handle_all_errors(req: Request, error: Exception):

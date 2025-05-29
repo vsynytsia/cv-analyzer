@@ -1,9 +1,9 @@
-from .base import UpstreamServiceError
+from .base import ExternalServiceError
 
 __all__ = ["TextTranslationError"]
 
 
-class TextTranslationError(UpstreamServiceError):
+class TextTranslationError(ExternalServiceError):
     code = "text_translation_error"
 
     def __init__(self) -> None:
