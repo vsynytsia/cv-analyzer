@@ -4,9 +4,7 @@ import logging
 from collections.abc import Iterable
 from typing import Any, Callable, Sequence, TypeVar
 
-import jinja2
-
-__all__ = ["filter_exceptions", "flatten_list", "chunk", "gather", "get_rendered_template"]
+__all__ = ["filter_exceptions", "flatten_list", "chunk", "gather"]
 
 logger = logging.getLogger(__name__)
 
@@ -44,8 +42,3 @@ async def gather(
 
     results = await asyncio.gather(*tasks, return_exceptions=return_exceptions)
     return post_processor(results)
-
-
-def get_rendered_template(env: jinja2.Environment, template_path: str, **kwargs) -> str:
-    template = env.get_template(template_path)
-    return template.render(**kwargs)
