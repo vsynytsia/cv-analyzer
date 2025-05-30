@@ -33,12 +33,14 @@ class VacancyScrapingService(AsyncRESTClient):
     async def _fetch_vacancies_urls(self, filter_: VacancySearchFilter) -> list[str]:
         parser = JobSiteHtmlParserFactory.from_search_filter(filter_)
 
-        response = await self._session.get(parser.site_vacancies_url, params=filter_.to_http_request_params())
+        response = await self.get(parser.site_vacancies_url, params=filter_.to_http_request_params())
+        response.raise_for_status()
 
         return parser.parse_vacancy_urls(response.content)
 
     async def _fetch_vacancy(self, url: str) -> Vacancy:
-        response = await self._session.get(url)
+        response = await self.get(url)
+        response.raise_for_status()
 
         parser = JobSiteHtmlParserFactory.from_vacancy_url(url)
 
