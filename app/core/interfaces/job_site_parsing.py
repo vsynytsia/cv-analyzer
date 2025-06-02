@@ -2,10 +2,10 @@ import abc
 
 from app.models import VacancyDetails
 
-__all__ = ["JobSiteHtmlParser"]
+__all__ = ["IJobSiteHtmlParser"]
 
 
-class JobSiteHtmlParser(abc.ABC):
+class IJobSiteHtmlParser(abc.ABC):
     @property
     @abc.abstractmethod
     def site_url(self) -> str:

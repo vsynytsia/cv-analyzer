@@ -1,4 +1,4 @@
-from app.core.interfaces import JobSiteHtmlParser
+from app.core.interfaces import IJobSiteHtmlParser
 from app.models.domain.search_filter import DjinniSearchFilter, DouSearchFilter, VacancySearchFilter
 from app.models.domain.vacancy import VacancyDetails
 
@@ -11,7 +11,7 @@ DOU_SITE_URL = "https://jobs.dou.ua/"
 DJINNI_SITE_URL = "https://djinni.co/"
 
 
-class DjinniHtmlParser(JobSiteHtmlParser):
+class DjinniHtmlParserI(IJobSiteHtmlParser):
     @property
     def site_url(self) -> str:
         return DJINNI_SITE_URL
@@ -38,7 +38,7 @@ class DjinniHtmlParser(JobSiteHtmlParser):
         return VacancyDetails(description=description, job_title=job_title, company_name=company_name, salary=salary)
 
 
-class DouHtmlParser(JobSiteHtmlParser):
+class DouHtmlParserI(IJobSiteHtmlParser):
     @property
     def site_url(self) -> str:
         return DOU_SITE_URL
@@ -65,8 +65,8 @@ class DouHtmlParser(JobSiteHtmlParser):
 
 class JobSiteHtmlParserFactory:
     @staticmethod
-    def from_search_filter(search_filter: VacancySearchFilter) -> JobSiteHtmlParser:
-        filter_to_parser = {DouSearchFilter: DouHtmlParser, DjinniSearchFilter: DjinniHtmlParser}
+    def from_search_filter(search_filter: VacancySearchFilter) -> IJobSiteHtmlParser:
+        filter_to_parser = {DouSearchFilter: DouHtmlParserI, DjinniSearchFilter: DjinniHtmlParserI}
         if (parser := filter_to_parser.get(type(search_filter))) is None:
             raise NotImplementedError(
                 f"Job site HTML parser for search filter {type(search_filter).__name__} is not implemented"
@@ -75,10 +75,10 @@ class JobSiteHtmlParserFactory:
         return parser()
 
     @staticmethod
-    def from_vacancy_url(url: str) -> JobSiteHtmlParser:
+    def from_vacancy_url(url: str) -> IJobSiteHtmlParser:
         if DJINNI_SITE_URL in url:
-            return DjinniHtmlParser()
+            return DjinniHtmlParserI()
         elif DOU_SITE_URL in url:
-            return DouHtmlParser()
+            return DouHtmlParserI()
         else:
             raise NotImplementedError(f"Job site HTML parser for url {url} is not implemented")

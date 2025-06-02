@@ -1,7 +1,7 @@
 import logging
 from collections.abc import Sequence
 
-from app.core.interfaces.generative import ContentGenerator, GenerationConfig, PromptManager
+from app.core.interfaces.generative import GenerationConfig, IContentGenerator, IPromptManager
 from app.infrastructure import utils
 from app.models.domain import ScoredVacancy, Vacancy, VacancyScore
 from app.models.generative import ScoredVacanciesLlmResponse, VacancyScoringPromptParams
@@ -10,7 +10,7 @@ __all__ = ["VacancyScoringService"]
 
 
 class VacancyScoringService:
-    def __init__(self, content_generator: ContentGenerator, prompt_manager: PromptManager) -> None:
+    def __init__(self, content_generator: IContentGenerator, prompt_manager: IPromptManager) -> None:
         self._content_generator = content_generator
         self._prompt_manager = prompt_manager
         self._logger = logging.getLogger(self.__class__.__name__)

@@ -1,12 +1,12 @@
 import abc
 
-__all__ = ["TextLanguageDetector", "TextTranslationConfig", "TextTranslator"]
+__all__ = ["ITextLanguageDetector", "TextTranslationConfig", "ITextTranslator"]
 
 from dataclasses import dataclass
 from typing import Iterable
 
 
-class TextLanguageDetector(abc.ABC):
+class ITextLanguageDetector(abc.ABC):
     @abc.abstractmethod
     def detect_language(self, text: str) -> str:
         raise NotImplementedError
@@ -18,7 +18,7 @@ class TextTranslationConfig:
     target_language: str
 
 
-class TextTranslator(abc.ABC):
+class ITextTranslator(abc.ABC):
     @abc.abstractmethod
     async def translate(self, text: str, translation_config: TextTranslationConfig) -> str:
         raise NotImplementedError

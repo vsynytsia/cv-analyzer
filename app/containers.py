@@ -1,13 +1,13 @@
 from dependency_injector import containers, providers
 
-from app.core.interfaces.generative import ContentGenerator, PromptManager
-from app.core.interfaces.text import TextLanguageDetector, TextTranslator
+from app.core.interfaces.generative import IContentGenerator, IPromptManager
+from app.core.interfaces.text import ITextLanguageDetector, ITextTranslator
 from app.core.settings import settings
 from app.infrastructure.file import FileProcessor
-from app.infrastructure.generative import GoogleGenaiContentGenerator, JinjaPromptManager
+from app.infrastructure.generative import GoogleGenaiContentGenerator, JinjaIPromptManager
 from app.infrastructure.text import (
-    GoogletransTextTranslator,
-    LangdetectTextLanguageDetector,
+    GoogletransITextTranslator,
+    LangdetectITextLanguageDetector,
     TextLanguageStandardizer,
 )
 from app.services import CVAnalysisService, CVOperationsService, VacancyScoringService, VacancyScrapingService
@@ -16,19 +16,19 @@ __all__ = ["Containers"]
 
 
 class Helpers(containers.DeclarativeContainer):
-    text_translator: providers.Singleton[TextTranslator] = providers.Singleton(GoogletransTextTranslator)
+    text_translator: providers.Singleton[ITextTranslator] = providers.Singleton(GoogletransITextTranslator)
 
-    text_language_detector: providers.Singleton[TextLanguageDetector] = providers.Singleton(
-        LangdetectTextLanguageDetector
+    text_language_detector: providers.Singleton[ITextLanguageDetector] = providers.Singleton(
+        LangdetectITextLanguageDetector
     )
 
     text_language_standardizer: providers.Singleton[TextLanguageStandardizer] = providers.Singleton(
         TextLanguageStandardizer, text_language_detector=text_language_detector, text_translator=text_translator
     )
 
-    content_generator: providers.Singleton[ContentGenerator] = providers.Singleton(GoogleGenaiContentGenerator)
+    content_generator: providers.Singleton[IContentGenerator] = providers.Singleton(GoogleGenaiContentGenerator)
 
-    prompt_manager: providers.Singleton[PromptManager] = providers.Singleton(JinjaPromptManager)
+    prompt_manager: providers.Singleton[IPromptManager] = providers.Singleton(JinjaIPromptManager)
 
     file_processor: providers.Singleton[FileProcessor] = providers.Singleton(
         FileProcessor, max_file_size_bytes=settings.MAX_UPLOAD_FILE_SIZE_BYTES

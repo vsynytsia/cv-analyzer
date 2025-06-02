@@ -3,7 +3,7 @@ from collections import defaultdict
 from collections.abc import Sequence
 from dataclasses import dataclass
 
-from app.core.interfaces import TextLanguageDetector, TextTranslationConfig, TextTranslator
+from app.core.interfaces import ITextLanguageDetector, ITextTranslator, TextTranslationConfig
 
 __all__ = ["TextLanguageStandardizer", "TextLanguageStandardizationConfig"]
 
@@ -15,7 +15,7 @@ class TextLanguageStandardizationConfig:
 
 
 class TextLanguageStandardizer:
-    def __init__(self, text_language_detector: TextLanguageDetector, text_translator: TextTranslator) -> None:
+    def __init__(self, text_language_detector: ITextLanguageDetector, text_translator: ITextTranslator) -> None:
         self._text_language_detector = text_language_detector
         self._text_translator = text_translator
         self._logger = logging.getLogger(self.__class__.__name__)

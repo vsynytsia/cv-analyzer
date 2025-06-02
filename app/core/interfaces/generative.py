@@ -4,7 +4,7 @@ from typing import Any, Generic, Type, TypeVar
 
 from pydantic import BaseModel
 
-__all__ = ["GenerationConfig", "ContentGenerator", "PromptManager"]
+__all__ = ["GenerationConfig", "IContentGenerator", "IPromptManager"]
 
 TResponseModel = TypeVar("TResponseModel", bound=BaseModel)
 
@@ -17,7 +17,7 @@ class GenerationConfig(Generic[TResponseModel]):
     response_model: Type[TResponseModel] | None = None
 
 
-class ContentGenerator(abc.ABC):
+class IContentGenerator(abc.ABC):
     @abc.abstractmethod
     async def generate_structured_content(
         self, prompt: str, generation_config: GenerationConfig[TResponseModel]
@@ -25,7 +25,7 @@ class ContentGenerator(abc.ABC):
         pass
 
 
-class PromptManager(abc.ABC):
+class IPromptManager(abc.ABC):
     @abc.abstractmethod
     def render_prompt_template(self, prompt_template_path: str, **prompt_params) -> str:
         raise NotImplementedError

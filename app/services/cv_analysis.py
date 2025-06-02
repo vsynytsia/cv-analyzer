@@ -1,7 +1,7 @@
 import logging
 
-from app.core.interfaces.generative import ContentGenerator, GenerationConfig, PromptManager
-from app.core.interfaces.text import TextLanguageDetector, TextTranslator
+from app.core.interfaces.generative import GenerationConfig, IContentGenerator, IPromptManager
+from app.core.interfaces.text import ITextLanguageDetector, ITextTranslator
 from app.models.domain import DjinniSearchFilter, DouSearchFilter, VacancySearchFilter
 from app.models.generative import ExtractVacancyFiltersLlmResponse, ExtractVacancyFiltersPromptParams
 
@@ -11,10 +11,10 @@ __all__ = ["CVAnalysisService"]
 class CVAnalysisService:
     def __init__(
         self,
-        translator: TextTranslator,
-        language_detector: TextLanguageDetector,
-        content_generator: ContentGenerator,
-        prompt_manager: PromptManager,
+        translator: ITextTranslator,
+        language_detector: ITextLanguageDetector,
+        content_generator: IContentGenerator,
+        prompt_manager: IPromptManager,
     ) -> None:
         self._translator = translator
         self._language_detector = language_detector
