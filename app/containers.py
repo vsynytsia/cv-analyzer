@@ -15,7 +15,7 @@ from app.services import CVAnalysisService, CVOperationsService, VacancyScoringS
 __all__ = ["Containers"]
 
 
-class Helpers(containers.DeclarativeContainer):
+class Infrastructure(containers.DeclarativeContainer):
     text_translator: providers.Singleton[ITextTranslator] = providers.Singleton(GoogletransITextTranslator)
 
     text_language_detector: providers.Singleton[ITextLanguageDetector] = providers.Singleton(
@@ -36,20 +36,22 @@ class Helpers(containers.DeclarativeContainer):
 
 
 class Containers(containers.DeclarativeContainer):
-    helpers: providers.Container[Helpers] = providers.Container(Helpers)
+    infrastructure: providers.Container[Infrastructure] = providers.Container(Infrastructure)
 
     cv_analysis_service: providers.Singleton[CVAnalysisService] = providers.Singleton(
         CVAnalysisService,
-        translator=helpers.text_translator,
-        language_detector=helpers.text_language_detector,
-        content_generator=helpers.content_generator,
-        prompt_manager=helpers.prompt_manager,
+        translator=infrastructure.text_translator,
+        language_detector=infrastructure.text_language_detector,
+        content_generator=infrastructure.content_generator,
+        prompt_manager=infrastructure.prompt_manager,
     )
 
     vacancy_scraping_service: providers.Singleton[VacancyScrapingService] = providers.Singleton(VacancyScrapingService)
 
     vacancy_scoring_service: providers.Singleton[VacancyScoringService] = providers.Singleton(
-        VacancyScoringService, content_generator=helpers.content_generator, prompt_manager=helpers.prompt_manager
+        VacancyScoringService,
+        content_generator=infrastructure.content_generator,
+        prompt_manager=infrastructure.prompt_manager,
     )
 
     cv_operations_service: providers.Singleton[CVOperationsService] = providers.Singleton(
@@ -57,6 +59,6 @@ class Containers(containers.DeclarativeContainer):
         cv_analyzer=cv_analysis_service,
         vacancy_scraper=vacancy_scraping_service,
         vacancy_scorer=vacancy_scoring_service,
-        language_standardizer=helpers.text_language_standardizer,
-        file_processor=helpers.file_processor,
+        language_standardizer=infrastructure.text_language_standardizer,
+        file_processor=infrastructure.file_processor,
     )
