@@ -1,9 +1,8 @@
-import abc
+from typing import Protocol
 
 __all__ = ["IFileTextExtractor"]
 
 
-class IFileTextExtractor(abc.ABC):
-    @abc.abstractmethod
+class IFileTextExtractor(Protocol):
     def extract_text(self, file: bytes) -> str:
-        raise NotImplementedError
+        pass

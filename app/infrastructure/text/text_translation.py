@@ -3,15 +3,15 @@ from typing import TypeAlias
 import googletrans
 
 from app.core.exceptions import TextTranslationError
-from app.core.interfaces import ITextTranslator, TextTranslationConfig
+from app.core.interfaces import TextTranslationConfig
 
-__all__ = ["GoogletransITextTranslator"]
+__all__ = ["GoogletransTextTranslator"]
 
 
 GoogletransTranslation: TypeAlias = googletrans.client.Translated | list[googletrans.client.Translated]
 
 
-class GoogletransITextTranslator(ITextTranslator):
+class GoogletransTextTranslator:
     def __init__(self):
         self._client = googletrans.Translator()
 

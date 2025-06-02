@@ -1,6 +1,5 @@
-import abc
 from dataclasses import dataclass
-from typing import Any, Generic, Type, TypeVar
+from typing import Any, Generic, Protocol, Type, TypeVar
 
 from pydantic import BaseModel
 
@@ -17,19 +16,16 @@ class GenerationConfig(Generic[TResponseModel]):
     response_model: Type[TResponseModel] | None = None
 
 
-class IContentGenerator(abc.ABC):
-    @abc.abstractmethod
+class IContentGenerator(Protocol):
     async def generate_structured_content(
         self, prompt: str, generation_config: GenerationConfig[TResponseModel]
     ) -> TResponseModel:
         pass
 
 
-class IPromptManager(abc.ABC):
-    @abc.abstractmethod
+class IPromptManager(Protocol):
     def render_prompt_template(self, prompt_template_path: str, **prompt_params) -> str:
-        raise NotImplementedError
+        pass
 
-    @abc.abstractmethod
     def get_prompt_template(self, prompt_template_path: str) -> Any:
-        raise NotImplementedError
+        pass

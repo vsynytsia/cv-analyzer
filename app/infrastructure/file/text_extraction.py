@@ -3,10 +3,10 @@ import pymupdf
 from app.core.exceptions import FileTextExtractionError
 from app.core.interfaces import IFileTextExtractor
 
-__all__ = ["PdfTextExtractorI", "FileTextExtractorFactory"]
+__all__ = ["PdfTextExtractor", "FileTextExtractorFactory"]
 
 
-class PdfTextExtractorI(IFileTextExtractor):
+class PdfTextExtractor:
     def extract_text(self, file: bytes) -> str:
         try:
             with pymupdf.open(stream=file, filetype="pdf") as doc:
@@ -19,7 +19,7 @@ class PdfTextExtractorI(IFileTextExtractor):
 class FileTextExtractorFactory:
     @staticmethod
     def from_file_extension(file_extension: str) -> "IFileTextExtractor":
-        mapping = {"pdf": PdfTextExtractorI}
+        mapping = {"pdf": PdfTextExtractor}
         if (file_text_extractor := mapping.get(file_extension)) is None:
             raise NotImplementedError(f"File text extractor for '{file_extension}' files is not implemented")
 

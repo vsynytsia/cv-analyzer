@@ -1,12 +1,11 @@
 import jinja2
 
 from app.core.exceptions import PromptTemplateNotFound
-from app.core.interfaces import IPromptManager
 
-__all__ = ["JinjaIPromptManager"]
+__all__ = ["JinjaPromptManager"]
 
 
-class JinjaIPromptManager(IPromptManager):
+class JinjaPromptManager:
     def __init__(self) -> None:
         self._jinja_env = jinja2.Environment(
             loader=jinja2.FileSystemLoader("app/prompts"), trim_blocks=True, lstrip_blocks=True

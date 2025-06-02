@@ -4,10 +4,10 @@ from app.core.interfaces.generative import IContentGenerator, IPromptManager
 from app.core.interfaces.text import ITextLanguageDetector, ITextTranslator
 from app.core.settings import settings
 from app.infrastructure.file import FileProcessor
-from app.infrastructure.generative import GoogleGenaiContentGenerator, JinjaIPromptManager
+from app.infrastructure.generative import GoogleGenaiContentGenerator, JinjaPromptManager
 from app.infrastructure.text import (
-    GoogletransITextTranslator,
-    LangdetectITextLanguageDetector,
+    GoogletransTextTranslator,
+    LangdetectTextLanguageDetector,
     TextLanguageStandardizer,
 )
 from app.services import CVAnalysisService, CVOperationsService, VacancyScoringService, VacancyScrapingService
@@ -16,10 +16,10 @@ __all__ = ["Containers"]
 
 
 class Infrastructure(containers.DeclarativeContainer):
-    text_translator: providers.Singleton[ITextTranslator] = providers.Singleton(GoogletransITextTranslator)
+    text_translator: providers.Singleton[ITextTranslator] = providers.Singleton(GoogletransTextTranslator)
 
     text_language_detector: providers.Singleton[ITextLanguageDetector] = providers.Singleton(
-        LangdetectITextLanguageDetector
+        LangdetectTextLanguageDetector
     )
 
     text_language_standardizer: providers.Singleton[TextLanguageStandardizer] = providers.Singleton(
@@ -28,7 +28,7 @@ class Infrastructure(containers.DeclarativeContainer):
 
     content_generator: providers.Singleton[IContentGenerator] = providers.Singleton(GoogleGenaiContentGenerator)
 
-    prompt_manager: providers.Singleton[IPromptManager] = providers.Singleton(JinjaIPromptManager)
+    prompt_manager: providers.Singleton[IPromptManager] = providers.Singleton(JinjaPromptManager)
 
     file_processor: providers.Singleton[FileProcessor] = providers.Singleton(
         FileProcessor, max_file_size_bytes=settings.MAX_UPLOAD_FILE_SIZE_BYTES

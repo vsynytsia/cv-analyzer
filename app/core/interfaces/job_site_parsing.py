@@ -1,25 +1,21 @@
-import abc
+from typing import Protocol
 
 from app.models import VacancyDetails
 
 __all__ = ["IJobSiteHtmlParser"]
 
 
-class IJobSiteHtmlParser(abc.ABC):
+class IJobSiteHtmlParser(Protocol):
     @property
-    @abc.abstractmethod
     def site_url(self) -> str:
         pass
 
     @property
-    @abc.abstractmethod
     def site_vacancies_url(self) -> str:
         pass
 
-    @abc.abstractmethod
     def parse_vacancy_urls(self, html_content: bytes) -> list[str]:
-        raise NotImplementedError
+        pass
 
-    @abc.abstractmethod
     def parse_vacancy_details(self, vacancy_html_content: bytes) -> VacancyDetails:
-        raise NotImplementedError
+        pass

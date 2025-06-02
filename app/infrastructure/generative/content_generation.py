@@ -7,7 +7,7 @@ from pydantic import BaseModel, ValidationError
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 from app.core.exceptions import ContentGenerationError, GenerativeResponseModelConversionError
-from app.core.interfaces import GenerationConfig, IContentGenerator
+from app.core.interfaces import GenerationConfig
 
 __all__ = ["GoogleGenaiContentGenerator"]
 
@@ -15,7 +15,7 @@ __all__ = ["GoogleGenaiContentGenerator"]
 TResponseModel = TypeVar("TResponseModel", bound=BaseModel)
 
 
-class GoogleGenaiContentGenerator(IContentGenerator):
+class GoogleGenaiContentGenerator:
     DEFAULT_SAFETY_SETTINGS = {
         genai.types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
         genai.types.HarmCategory.HARM_CATEGORY_HARASSMENT: genai.types.HarmBlockThreshold.BLOCK_NONE,

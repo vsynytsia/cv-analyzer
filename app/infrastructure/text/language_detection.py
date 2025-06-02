@@ -1,12 +1,11 @@
 import langdetect
 
 from app.core.exceptions import TextLanguageDetectionError
-from app.core.interfaces import ITextLanguageDetector
 
-__all__ = ["LangdetectITextLanguageDetector"]
+__all__ = ["LangdetectTextLanguageDetector"]
 
 
-class LangdetectITextLanguageDetector(ITextLanguageDetector):
+class LangdetectTextLanguageDetector:
     def detect_language(self, text: str) -> str:
         try:
             return langdetect.detect(text)

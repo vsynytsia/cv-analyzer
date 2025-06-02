@@ -1,15 +1,12 @@
-import abc
+from dataclasses import dataclass
+from typing import Iterable, Protocol
 
 __all__ = ["ITextLanguageDetector", "TextTranslationConfig", "ITextTranslator"]
 
-from dataclasses import dataclass
-from typing import Iterable
 
-
-class ITextLanguageDetector(abc.ABC):
-    @abc.abstractmethod
+class ITextLanguageDetector(Protocol):
     def detect_language(self, text: str) -> str:
-        raise NotImplementedError
+        pass
 
 
 @dataclass
@@ -18,11 +15,9 @@ class TextTranslationConfig:
     target_language: str
 
 
-class ITextTranslator(abc.ABC):
-    @abc.abstractmethod
+class ITextTranslator(Protocol):
     async def translate(self, text: str, translation_config: TextTranslationConfig) -> str:
-        raise NotImplementedError
+        pass
 
-    @abc.abstractmethod
     async def batch_translate(self, texts: Iterable[str], translation_config: TextTranslationConfig) -> list[str]:
-        raise NotImplementedError
+        pass

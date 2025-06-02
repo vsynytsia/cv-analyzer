@@ -11,7 +11,7 @@ DOU_SITE_URL = "https://jobs.dou.ua/"
 DJINNI_SITE_URL = "https://djinni.co/"
 
 
-class DjinniHtmlParserI(IJobSiteHtmlParser):
+class DjinniHtmlParser:
     @property
     def site_url(self) -> str:
         return DJINNI_SITE_URL
@@ -38,7 +38,7 @@ class DjinniHtmlParserI(IJobSiteHtmlParser):
         return VacancyDetails(description=description, job_title=job_title, company_name=company_name, salary=salary)
 
 
-class DouHtmlParserI(IJobSiteHtmlParser):
+class DouHtmlParser:
     @property
     def site_url(self) -> str:
         return DOU_SITE_URL
@@ -66,7 +66,7 @@ class DouHtmlParserI(IJobSiteHtmlParser):
 class JobSiteHtmlParserFactory:
     @staticmethod
     def from_search_filter(search_filter: VacancySearchFilter) -> IJobSiteHtmlParser:
-        filter_to_parser = {DouSearchFilter: DouHtmlParserI, DjinniSearchFilter: DjinniHtmlParserI}
+        filter_to_parser = {DouSearchFilter: DouHtmlParser, DjinniSearchFilter: DjinniHtmlParser}
         if (parser := filter_to_parser.get(type(search_filter))) is None:
             raise NotImplementedError(
                 f"Job site HTML parser for search filter {type(search_filter).__name__} is not implemented"
@@ -77,8 +77,8 @@ class JobSiteHtmlParserFactory:
     @staticmethod
     def from_vacancy_url(url: str) -> IJobSiteHtmlParser:
         if DJINNI_SITE_URL in url:
-            return DjinniHtmlParserI()
+            return DjinniHtmlParser()
         elif DOU_SITE_URL in url:
-            return DouHtmlParserI()
+            return DouHtmlParser()
         else:
             raise NotImplementedError(f"Job site HTML parser for url {url} is not implemented")
