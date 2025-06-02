@@ -1,5 +1,4 @@
-import abc
-
+from app.core.interfaces import JobSiteHtmlParser
 from app.models.domain.search_filter import DjinniSearchFilter, DouSearchFilter, VacancySearchFilter
 from app.models.domain.vacancy import VacancyDetails
 
@@ -7,28 +6,9 @@ from .html_parsing import HtmlParser
 
 __all__ = ["JobSiteHtmlParserFactory"]
 
+
 DOU_SITE_URL = "https://jobs.dou.ua/"
 DJINNI_SITE_URL = "https://djinni.co/"
-
-
-class JobSiteHtmlParser(abc.ABC):
-    @property
-    @abc.abstractmethod
-    def site_url(self) -> str:
-        pass
-
-    @property
-    @abc.abstractmethod
-    def site_vacancies_url(self) -> str:
-        pass
-
-    @abc.abstractmethod
-    def parse_vacancy_urls(self, html_content: bytes) -> list[str]:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def parse_vacancy_details(self, vacancy_html_content: bytes) -> VacancyDetails:
-        raise NotImplementedError
 
 
 class DjinniHtmlParser(JobSiteHtmlParser):

@@ -1,6 +1,4 @@
-import abc
-from dataclasses import dataclass
-from typing import Generic, Type, TypeVar
+from typing import TypeVar
 
 from google import generativeai as genai
 from google.api_core.exceptions import InternalServerError, ServiceUnavailable
@@ -9,26 +7,12 @@ from pydantic import BaseModel, ValidationError
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 from app.core.exceptions import ContentGenerationError, GenerativeResponseModelConversionError
+from app.core.interfaces import ContentGenerator, GenerationConfig
 
-__all__ = ["GenerationConfig", "ContentGenerator", "GoogleGenaiContentGenerator"]
+__all__ = ["GoogleGenaiContentGenerator"]
+
 
 TResponseModel = TypeVar("TResponseModel", bound=BaseModel)
-
-
-@dataclass
-class GenerationConfig(Generic[TResponseModel]):
-    temperature: float | None = None
-    top_p: float | None = None
-    top_k: int | None = None
-    response_model: Type[TResponseModel] | None = None
-
-
-class ContentGenerator(abc.ABC):
-    @abc.abstractmethod
-    async def generate_structured_content(
-        self, prompt: str, generation_config: GenerationConfig[TResponseModel]
-    ) -> TResponseModel:
-        pass
 
 
 class GoogleGenaiContentGenerator(ContentGenerator):

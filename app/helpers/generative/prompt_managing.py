@@ -1,21 +1,9 @@
-import abc
-from typing import Any
-
 import jinja2
 
 from app.core.exceptions import PromptTemplateNotFound
+from app.core.interfaces import PromptManager
 
-__all__ = ["PromptManager", "JinjaPromptManager"]
-
-
-class PromptManager(abc.ABC):
-    @abc.abstractmethod
-    def render_prompt_template(self, prompt_template_path: str, **prompt_params) -> str:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def get_prompt_template(self, prompt_template_path: str) -> Any:
-        raise NotImplementedError
+__all__ = ["JinjaPromptManager"]
 
 
 class JinjaPromptManager(PromptManager):

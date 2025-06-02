@@ -1,16 +1,9 @@
-import abc
-
 import langdetect
 
 from app.core.exceptions import TextLanguageDetectionError
+from app.core.interfaces import TextLanguageDetector
 
-__all__ = ["TextLanguageDetector", "LangdetectTextLanguageDetector"]
-
-
-class TextLanguageDetector(abc.ABC):
-    @abc.abstractmethod
-    def detect_language(self, text: str) -> str:
-        raise NotImplementedError
+__all__ = ["LangdetectTextLanguageDetector"]
 
 
 class LangdetectTextLanguageDetector(TextLanguageDetector):

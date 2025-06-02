@@ -1,7 +1,7 @@
 import logging
 
-from app.helpers.generative import ContentGenerator, GenerationConfig, PromptManager
-from app.helpers.text import TextLanguageDetector, TextTranslator
+from app.core.interfaces.generative import ContentGenerator, GenerationConfig, PromptManager
+from app.core.interfaces.text import TextLanguageDetector, TextTranslator
 from app.models.domain import DjinniSearchFilter, DouSearchFilter, VacancySearchFilter
 from app.models.generative import ExtractVacancyFiltersLlmResponse, ExtractVacancyFiltersPromptParams
 

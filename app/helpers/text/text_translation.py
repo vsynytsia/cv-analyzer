@@ -1,30 +1,14 @@
-import abc
-from dataclasses import dataclass
-from typing import Iterable, TypeAlias
+from typing import TypeAlias
 
 import googletrans
 
 from app.core.exceptions import TextTranslationError
+from app.core.interfaces import TextTranslationConfig, TextTranslator
 
-__all__ = ["TextTranslationConfig", "TextTranslator", "GoogletransTextTranslator"]
+__all__ = ["GoogletransTextTranslator"]
+
 
 GoogletransTranslation: TypeAlias = googletrans.client.Translated | list[googletrans.client.Translated]
-
-
-@dataclass
-class TextTranslationConfig:
-    source_language: str
-    target_language: str
-
-
-class TextTranslator(abc.ABC):
-    @abc.abstractmethod
-    async def translate(self, text: str, translation_config: TextTranslationConfig) -> str:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def batch_translate(self, texts: Iterable[str], translation_config: TextTranslationConfig) -> list[str]:
-        raise NotImplementedError
 
 
 class GoogletransTextTranslator(TextTranslator):

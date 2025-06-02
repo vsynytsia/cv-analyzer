@@ -1,16 +1,9 @@
-import abc
-
 import pymupdf
 
 from app.core.exceptions import FileTextExtractionError
+from app.core.interfaces import FileTextExtractor
 
-__all__ = ["FileTextExtractor", "PdfTextExtractor", "FileTextExtractorFactory"]
-
-
-class FileTextExtractor(abc.ABC):
-    @abc.abstractmethod
-    def extract_text(self, file: bytes) -> str:
-        raise NotImplementedError
+__all__ = ["PdfTextExtractor", "FileTextExtractorFactory"]
 
 
 class PdfTextExtractor(FileTextExtractor):

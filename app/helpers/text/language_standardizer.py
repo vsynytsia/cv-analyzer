@@ -3,8 +3,7 @@ from collections import defaultdict
 from collections.abc import Sequence
 from dataclasses import dataclass
 
-from .language_detection import TextLanguageDetector
-from .text_translation import TextTranslationConfig, TextTranslator
+from app.core.interfaces import TextLanguageDetector, TextTranslationConfig, TextTranslator
 
 __all__ = ["TextLanguageStandardizer", "TextLanguageStandardizationConfig"]
 
