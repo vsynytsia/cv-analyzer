@@ -1,8 +1,8 @@
 import logging
 from collections.abc import Sequence
 
-from app.helpers.file import FileProcessor
-from app.helpers.text import TextLanguageStandardizationConfig, TextLanguageStandardizer
+from app.infrastructure.file import FileProcessor
+from app.infrastructure.text import TextLanguageStandardizationConfig, TextLanguageStandardizer
 from app.models.domain import File, ScoredVacancy, Vacancy, VacancyDetails
 from app.services.cv_analysis import CVAnalysisService
 from app.services.vacancy_scoring import VacancyScoringService

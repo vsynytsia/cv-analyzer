@@ -3,9 +3,9 @@ from dependency_injector import containers, providers
 from app.core.interfaces.generative import ContentGenerator, PromptManager
 from app.core.interfaces.text import TextLanguageDetector, TextTranslator
 from app.core.settings import settings
-from app.helpers.file import FileProcessor
-from app.helpers.generative import GoogleGenaiContentGenerator, JinjaPromptManager
-from app.helpers.text import (
+from app.infrastructure.file import FileProcessor
+from app.infrastructure.generative import GoogleGenaiContentGenerator, JinjaPromptManager
+from app.infrastructure.text import (
     GoogletransTextTranslator,
     LangdetectTextLanguageDetector,
     TextLanguageStandardizer,

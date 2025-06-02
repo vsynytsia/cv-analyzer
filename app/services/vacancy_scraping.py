@@ -1,9 +1,9 @@
 import logging
 from collections.abc import Iterable
 
-from app.helpers import utils
-from app.helpers.async_rest_client import AsyncRESTClient
-from app.helpers.html_parsing import JobSiteHtmlParserFactory
+from app.infrastructure import utils
+from app.infrastructure.async_rest_client import AsyncRESTClient
+from app.infrastructure.html_parsing import JobSiteHtmlParserFactory
 from app.models.domain import Vacancy, VacancySearchFilter
 
 __all__ = ["VacancyScrapingService"]

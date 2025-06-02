@@ -2,7 +2,7 @@ import logging
 from collections.abc import Sequence
 
 from app.core.interfaces.generative import ContentGenerator, GenerationConfig, PromptManager
-from app.helpers import utils
+from app.infrastructure import utils
 from app.models.domain import ScoredVacancy, Vacancy, VacancyScore
 from app.models.generative import ScoredVacanciesLlmResponse, VacancyScoringPromptParams
 
