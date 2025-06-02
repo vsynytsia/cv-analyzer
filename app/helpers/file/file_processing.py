@@ -28,7 +28,7 @@ class FileProcessor:
         if file.content is None or file.size is None or file.filename is None:
             raise FileMalformed()
 
-        if file.extension is None:
+        if file.extension is None or file.extension not in self.SUPPORTED_FILE_TYPES:
             raise UnsupportedFileType(file.filename, self.SUPPORTED_FILE_TYPES)
 
         if file.size > self.max_file_size_bytes:

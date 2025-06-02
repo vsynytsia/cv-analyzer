@@ -16,7 +16,7 @@ class UnsupportedFileType(UserInputError):
     def __init__(self, filename: str, supported_types: Iterable[str]) -> None:
         self.filename = filename
         self.supported_types = supported_types
-        super().__init__(f"File {filename} has unsupported type. Supported types: {supported_types}")
+        super().__init__(f"File '{filename}' has unsupported type. Supported types: {supported_types}")
 
 
 class FileTextExtractionError(UserInputError):

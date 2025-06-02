@@ -2,6 +2,7 @@ import logging
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from pydantic import ValidationError
 from starlette import status
 
 from app.api.serializers import ErrorSerializer
@@ -44,9 +45,17 @@ def register_error_handlers(app: FastAPI):
 
         raise RuntimeError(f"Could not map exception {error} to proper HTTP type")
 
+    @app.exception_handler(ValidationError)
+    def bad_request(req: Request, error: ValidationError):
+        logger.error(f"Pydantic validation error: {error}", exc_info=error)
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=ErrorSerializer(code="bad_request", message=str(error)).model_dump(),
+        )
+
     @app.exception_handler(Exception)
     def handle_all_errors(req: Request, error: Exception):
-        logger.error(f"Unhandled server error: {error}")
+        logger.error(f"Unhandled server error: {error}", exc_info=error)
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content=ErrorSerializer(code="unhandled_error", message=str(error)).model_dump(),
