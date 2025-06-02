@@ -1,12 +1,9 @@
 import logging
 from collections.abc import Sequence
 
-from fastapi import UploadFile
-
-from app.core.settings import settings
+from app.helpers.file import FileProcessor
 from app.helpers.text import TextLanguageStandardizationConfig, TextLanguageStandardizer
-from app.helpers.upload_file import UploadFileProcessor
-from app.models.domain import ScoredVacancy, Vacancy, VacancyDetails
+from app.models.domain import File, ScoredVacancy, Vacancy, VacancyDetails
 from app.services.cv_analysis import CVAnalysisService
 from app.services.vacancy_scoring import VacancyScoringService
 from app.services.vacancy_scraping import VacancyScrapingService
@@ -24,19 +21,20 @@ class CVOperationsService:
         vacancy_scraper: VacancyScrapingService,
         vacancy_scorer: VacancyScoringService,
         language_standardizer: TextLanguageStandardizer,
+        file_processor: FileProcessor,
     ) -> None:
         self._cv_analyzer = cv_analyzer
         self._vacancy_scraper = vacancy_scraper
         self._vacancy_scorer = vacancy_scorer
         self._language_standardizer = language_standardizer
+        self._file_processor = file_processor
 
         self._logger = logging.getLogger(self.__class__.__name__)
 
-    async def match_vacancies(self, cv: UploadFile) -> list[ScoredVacancy]:
-        file_processor = UploadFileProcessor(cv, settings.MAX_UPLOAD_FILE_SIZE_BYTES)
-        self._logger.info("Matching vacancies for file %s", file_processor.filename)
+    async def match_vacancies(self, cv_file: File) -> list[ScoredVacancy]:
+        self._logger.info("Matching vacancies for file %s", cv_file.filename)
 
-        cv_str = await file_processor.extract_text()
+        cv_str = await self._file_processor.extract_text(cv_file)
         standardized_cv_list = await self._language_standardizer.standardize_text_language(
             texts=[cv_str], standardization_config=DEFAULT_STANDARDIZATION_CONFIG
         )
@@ -56,7 +54,7 @@ class CVOperationsService:
 
         scored_vacancies = await self._vacancy_scorer.score_vacancies(standardized_cv_str, standardized_vacancies)
 
-        self._logger.info("Successfully matched vacancies for file %s", file_processor.filename)
+        self._logger.info("Successfully matched vacancies for file %s", cv_file.filename)
         return scored_vacancies
 
     @staticmethod

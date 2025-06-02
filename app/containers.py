@@ -1,5 +1,7 @@
 from dependency_injector import containers, providers
 
+from app.core.settings import settings
+from app.helpers.file import FileProcessor
 from app.helpers.generative import ContentGenerator, GoogleGenaiContentGenerator, JinjaPromptManager, PromptManager
 from app.helpers.text import (
     GoogletransTextTranslator,
@@ -28,6 +30,10 @@ class Helpers(containers.DeclarativeContainer):
 
     prompt_manager: providers.Singleton[PromptManager] = providers.Singleton(JinjaPromptManager)
 
+    file_processor: providers.Singleton[FileProcessor] = providers.Singleton(
+        FileProcessor, max_file_size_bytes=settings.MAX_UPLOAD_FILE_SIZE_BYTES
+    )
+
 
 class Containers(containers.DeclarativeContainer):
     helpers: providers.Container[Helpers] = providers.Container(Helpers)
@@ -52,4 +58,5 @@ class Containers(containers.DeclarativeContainer):
         vacancy_scraper=vacancy_scraping_service,
         vacancy_scorer=vacancy_scoring_service,
         language_standardizer=helpers.text_language_standardizer,
+        file_processor=helpers.file_processor,
     )
