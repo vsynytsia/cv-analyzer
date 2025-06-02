@@ -19,7 +19,7 @@ class FileProcessor:
         self.validate(file)
 
         file_text_extractor = FileTextExtractorFactory.from_file_extension(file.extension)
-        text = file_text_extractor.extract_text(file.content)
+        text = file_text_extractor.extract_text(file)
         self._logger.info("Extracted text from file %s", file.filename)
 
         return text

@@ -2,14 +2,15 @@ import pymupdf
 
 from app.core.exceptions import FileTextExtractionError
 from app.core.interfaces import IFileTextExtractor
+from app.models.domain import File
 
 __all__ = ["PdfTextExtractor", "FileTextExtractorFactory"]
 
 
 class PdfTextExtractor:
-    def extract_text(self, file: bytes) -> str:
+    def extract_text(self, file: File) -> str:
         try:
-            with pymupdf.open(stream=file, filetype="pdf") as doc:
+            with pymupdf.open(stream=file.content, filetype="pdf") as doc:
                 pages = [page.get_text().strip() for page in doc]
                 return " ".join(pages)
         except Exception as ex:
