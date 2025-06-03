@@ -14,8 +14,6 @@ This project provides an API for processing CVs, extracting key information, and
 -   **Vacancy Fetching:** Fetches job vacancies from DOU and Djinni based on extracted filters.
 -   **Vacancy Scoring:** Scores fetched vacancies based on their relevance to the CV using LLMs.
 -   **API:** Provides a RESTful API built with FastAPI.
--   **Dockerized:** Easily deployable using Docker.
--   **Automated Code Quality:** Uses `ruff` for linting and formatting, and `pre-commit` for code quality checks.
 
 ## Getting Started
 
@@ -30,8 +28,8 @@ This project provides an API for processing CVs, extracting key information, and
 1.  **Clone the repository:**
 
     ```bash
-    git clone <your_repo_url>
-    cd <your_repo_directory>
+    git clone <repo_url>
+    cd <repo_directory>
     ```
 
 2.  **Create a `.env` file:**
@@ -64,8 +62,6 @@ The API documentation is available at `http://localhost:8080/docs` when the appl
 -   **`POST /cv-operations/match-vacancies`**: Upload a PDF CV to process and get scored vacancies.
     -   **Request Body:** `multipart/form-data` with a file named `cv`.
     -   **Response:** A JSON array of `ScoredVacancy` objects.
--   **`GET /`**: Redirects to the API documentation.
--   **`GET /v1/utils/healthcheck`**: Returns `true` if the API is healthy.
 
 ### Example Request
 
