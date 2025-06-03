@@ -40,4 +40,4 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 EXPOSE 8080
 
-CMD ["fastapi", "run", "main.py"]
+CMD ["python", "-m", "cv_analyzer", "serve"]
